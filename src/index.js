@@ -1,8 +1,9 @@
 import Phaser from 'phaser'
 import Bullet from './assets/sprites/Bullet'
+import Enemy from './assets/sprites/Enemy'
 
 import imgPlayerIdle from './assets/img/player.png'
-import imgEnemy from './assets/img/enemy1_idle.png'
+import imgEnemy from './assets/img/enemy.png'
 import imgBullet from './assets/img/bullet.png'
 
 
@@ -31,17 +32,15 @@ function preload(){
     //load resources
     this.load.image('player',imgPlayerIdle)
     this.load.image('bullet',imgBullet)
-    // this.load.image('enemy',imgEnemy)
+    this.load.image('enemy',imgEnemy)
 }
 function create(){
     //create before to start game
     this.player = this.physics.add.sprite(200,200,'player')
     this.player.setCollideWorldBounds(true)
     this.player.setOrigin(0.5,0.5)
-    // this.enemy = this.physics.add.sprite(500,200,'enemy')
-    // this.enemy.setCollideWorldBounds(true)
-    // this.enemy.setOrigin(0,0)
-
+    this.player.body.immovable = true
+    
     this.moveKeys = this.input.keyboard.addKeys({
         up: Phaser.Input.Keyboard.KeyCodes.W,
         down: Phaser.Input.Keyboard.KeyCodes.S,
@@ -51,6 +50,13 @@ function create(){
     // this.input.keyboard.on("keydown_W", (e) => {
     //     this.player.setVelocityY(-20);
     // })
+
+    this.enemys = this.physics.add.group({classType: Enemy, runChildUpdate: true})
+    this.enemys.get(200,150,'enemy')
+    this.enemys.children.each(child =>{
+        child.init({target:this.player})
+    })
+    this.physics.overlap(this.player,this.enemys,()=>{ console.log("asd") },null,this)
 
     this.bullets = this.physics.add.group({classType: Bullet, runChildUpdate : true})
     this.bulletCooldown = 0
@@ -84,6 +90,12 @@ function update(time,delta){
         this.player.setVelocityX(MAX_PLAYER_SPEED)
     }
     this.player.body.velocity.normalize().scale(MAX_PLAYER_SPEED)
+
+    //enemies
+    this.enemys.children.each(child =>{
+        this.physics.moveToObject(child,this.player,50)
+        this.physics.collide(child, this.player);
+    })
 
     //fire
     if(this.input.mousePointer.isDown && this.bulletCooldown <= 0){
