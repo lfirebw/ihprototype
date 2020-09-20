@@ -1,10 +1,13 @@
 import Phaser from 'phaser'
 import Bullet from '../sprites/Bullet'
 import Enemy from '../sprites/Enemy'
+import statusBar from '../sprites/statusBar'
 
 import imgPlayerIdle from '../img/player.png'
 import imgEnemy from '../img/enemy.png'
 import imgBullet from '../img/bullet.png'
+import imgHealthBar from '../img/healthbar.png'
+import imgHealthBarBackground from '../img/healthbar-background.png'
 
 const MAX_PLAYER_SPEED = 200
 const ROTATION_PI = Math.PI/2
@@ -18,8 +21,14 @@ export default class Testgame extends Phaser.Scene{
         this.load.image('player',imgPlayerIdle)
         this.load.image('bullet',imgBullet)
         this.load.image('enemy',imgEnemy)
+        this.load.image('healthBar',imgHealthBar)
+        this.load.image('healthBarBg',imgHealthBarBackground)
     }
     create(){
+        //  Set the camera and physics bounds to be the size of 4x4 bg images
+        this.cameras.main.setBounds(0, 0, 1920 * 2, 1080 * 2);
+        this.physics.world.setBounds(0, 0, 1920 * 2, 1080 * 2);
+
         //create before to start game
         this.player = this.physics.add.sprite(200,200,'player')
         this.player.setCollideWorldBounds(true)
@@ -45,6 +54,19 @@ export default class Testgame extends Phaser.Scene{
     
         this.bullets = this.physics.add.group({classType: Bullet, runChildUpdate : true})
         this.bulletCooldown = 0
+
+        //UI Health Bar
+        var healthBarBg = this.add.sprite(5,5,'healthBarBg')
+        healthBarBg.setOrigin(0,0)
+        healthBarBg.setScrollFactor(0)
+        this.healthBar = new statusBar(this)
+
+        this.healthBar.init('healthBar',5,5)
+        this.healthBar.setValue(50)
+        
+        //config camera
+        this.cameras.main.startFollow(this.player)
+
     }
     update(time,delta){
         // bucle game
