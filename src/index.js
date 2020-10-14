@@ -10,7 +10,10 @@ const config = {
     parent: "game",
     backgroundColor: "#000000",
     physics: {
-        default: 'arcade'
+        default: 'arcade',
+        arcade:{
+            debug:true
+        }
     }
 }
 
