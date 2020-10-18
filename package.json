@@ -4,7 +4,8 @@
   "description": "videojuego",
   "main": "src/index.js",
   "dependencies": {
-    "phaser": "^3.24.1"
+    "phaser": "^3.24.1",
+    "phaser-matter-collision-plugin": "^0.10.2"
   },
   "devDependencies": {
     "@babel/core": "^7.8.4",

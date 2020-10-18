@@ -45,7 +45,7 @@ export default class Testgame extends Phaser.Scene{
         // this.input.keyboard.on("keydown_W", (e) => {
         //     this.player.setVelocityY(-20);
         // })
-    
+        
         this.enemys = this.physics.add.group({classType: Enemy, runChildUpdate: true, name:"Rata"})
         this.enemys.get(200,150,'enemy')
         this.enemys.children.each(child =>{
